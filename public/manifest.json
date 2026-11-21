@@ -1,0 +1,10 @@
+{
+  "name": "ctzn",
+  "short_name": "ctzn",
+  "description": "Know who is in charge of your area, report problems, and track fixes.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4F5F0",
+  "theme_color": "#0B6B3A",
+  "icons": []
+}

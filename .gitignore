@@ -1,0 +1,6 @@
+node_modules
+.next
+.next-cache-backup-*
+.env.local
+.DS_Store
+data/crawl/
