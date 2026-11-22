@@ -36,7 +36,7 @@ The Learn screen and relevant elected-official profiles also explain how policy 
 - **Leaders:** allocation, local offices, chain of command from President to councillor, ministers, the Senate.
 - **Report:** optional photo, category, description, confirmed state/LGA, pin, responsibility chain and complaint draft. Failed database writes are labelled device-only.
 - **Consumer rights:** step-by-step plan for bad products and services, with regulators and free legal help.
-- **Map:** Google Maps issue overview with category/status/search filters, issue profiles and Google Maps/Street View location links. Samples are hidden unless enabled. The in-app Google map requires the configured key.
+- **Map:** OpenStreetMap issue overview with category/status/search filters, issue profiles and external Google Maps/Street View location links. Samples are hidden unless enabled. The in-app map does not require a Google API key.
 - **Learn:** short lessons and one-time quizzes about waste oversight, road contracts and evaluating evidence.
 - **Project evidence:** source intake for award references, alleged contractors, procuring authorities, dated progress claims, news/video/social links and timestamps. All contributor submissions are unreviewed. No contractor or abandonment is inferred from a report alone.
 - **Fact check:** news with verdicts and reasons, guessing game, claim submission.
@@ -61,12 +61,12 @@ Automatic email delivery is intentionally deferred until a sender domain/account
 Reporters can open the selected report pin in Google Maps or Street View without an API key. To enable the interactive Google map inside the reporting screen:
 
 1. Create a Google Cloud project with billing and enable **Maps JavaScript API**.
-2. Create a browser API key restricted to Maps JavaScript API and your website HTTP referrers (include `http://localhost:3000/*` for local development and your deployed domain).
+2. Create a browser API key restricted to Maps JavaScript API and your website HTTP referrers. Add `http://localhost:3000/*` for local development, `https://ctzn.cc/*`, and `https://www.ctzn.cc/*` if you will use the `www` address.
 3. Set `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` in `.env.local` (see `.env.local.example`). Restart development or rebuild/redeploy production after changing this value.
 
 With a key, reporters can click the Google map to place their report pin, switch map layers, and inspect Street View within 50 metres where imagery exists. The panorama does not change the report pin. OpenStreetMap remains selectable and is used if Google cannot load. An absent key uses OpenStreetMap with Google Maps/Street View links. Street View is historical imagery, not current report evidence; the photo upload remains part of reporting.
 
-The Map tab uses Google Maps only. If its key is missing or loading fails, it keeps the searchable issue list and external location links available rather than displaying a different map provider. Google Cloud billing must be enabled for the JavaScript API; usage may incur charges, so configure a budget and API restrictions before launch.
+The Map tab and the default reporting map use OpenStreetMap tiles through Leaflet, with visible OpenStreetMap attribution. Opening a location in Google Maps or Street View remains optional and does not require an API key. The Google map and Street View controls in the reporting flow remain available only when a Google Maps key is configured; the app falls back to OpenStreetMap if Google fails to load.
 
 ctzn currently runs locally with its database connection disabled in `.env.local`, at the user's request. Reports, existing drafts and learning progress are saved in this browser's storage. Contributor sign-up and submissions need a connected Supabase project. Map, news and optional location services still make external requests when used.
 

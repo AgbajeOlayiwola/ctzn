@@ -1,15 +1,17 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { AREA, FILTERS, NIGERIA_CENTER } from '@/lib/data';
 import { categoryById } from '@/lib/routing';
 import { googleLocationLinks } from '@/lib/google-maps';
 import { useStore } from '@/lib/store';
 import { locationMessage, useLocation } from './useLocation';
-import GoogleIssuesMap from './GoogleIssuesMap';
 import Responsibility from './Responsibility';
 import ProjectEvidence from './ProjectEvidence';
 import EmailComplaint from './EmailComplaint';
+
+const OpenStreetMap = dynamic(() => import('./MapView'), { ssr: false, loading: () => <div className="map" /> });
 
 function statusOf(report) {
   if (report.status === 'fixed') return 'Residents report fixed';
@@ -49,7 +51,7 @@ export default function MapTab({ t, goReport }) {
     <label className="stack-xs">Search street, area or issue<input className="field" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="e.g. waste, Bajulaye, Shomolu" /></label>
     <div className="row wrap">{FILTERS.map((item) => <button key={item.id} className={`chip ${filter === item.id ? 'on' : ''}`} aria-pressed={filter === item.id} onClick={() => setFilter(item.id)}>{item.label}</button>)}</div>
     <div className="between wrap"><label className="row">Status<select className="field" value={status} onChange={(event) => setStatus(event.target.value)}><option value="all">All reports</option><option value="open">Open</option><option value="claimed">Fix claimed</option><option value="fixed">Residents report fixed</option></select></label><label className="row"><input type="checkbox" checked={samples} onChange={(event) => setSamples(event.target.checked)} />Show sample reports</label></div>
-    <GoogleIssuesMap center={center} zoom={zoom} reports={shown} onSelect={setSelectedId} />
+    <OpenStreetMap center={center} zoom={zoom} reports={shown} onSelect={setSelectedId} />
     <div className="muted">Orange: reported open. Purple: fix claimed. Green: residents report fixed. Reports saved only on your device appear in your view but are not public.</div>
     <div className="grid2"><div className="card"><strong className="big">{openCount}</strong><span>Open or awaiting confirmation</span></div><div className="card"><strong className="big">{shown.length - openCount}</strong><span>Residents report fixed</span></div></div>
     {selected && <section className="stack" aria-label="Selected report">

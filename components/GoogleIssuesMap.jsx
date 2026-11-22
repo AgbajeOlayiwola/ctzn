@@ -60,6 +60,6 @@ export default function GoogleIssuesMap({ center, zoom, reports, onSelect }) {
     });
     return () => { info.close(); listeners.forEach((listener) => listener.remove()); overlays.current.forEach((circle) => circle.setMap(null)); overlays.current = []; };
   }, [ready, reports]);
-  if (!apiKey) return <div className="card note-warn"><strong>Google Maps is not connected yet.</strong><span>The issue list works below. Google Maps and Street View links open each report location in a new tab.</span></div>;
+  if (!apiKey) return <div className="card note-warn"><strong>Interactive map setup is incomplete.</strong><span>Add a Google Maps JavaScript API key as NEXT_PUBLIC_GOOGLE_MAPS_API_KEY, then rebuild the app. The issue list and location links are available in the meantime.</span></div>;
   return <div className="stack-xs">{error && <div role="status" className="note-warn">{error}</div>}<div ref={container} className="report-google-map" aria-label="Google map of reported issues" />{!ready && !error && <div role="status">Loading Google Maps…</div>}</div>;
 }

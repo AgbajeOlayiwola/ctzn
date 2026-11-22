@@ -21,24 +21,25 @@ function ClickToPick({ onPick }) {
 // Open reports are orange and grow with confirmations, so dense areas read as "hot".
 function styleFor(r) {
   if (r.status === 'fixed') return { color: '#0B6B3A', fillColor: '#0B6B3A', radius: 8 };
+  if (r.status === 'claimed') return { color: '#56379B', fillColor: '#8062C7', radius: 10 };
   const radius = Math.min(22, 8 + Math.round((r.seen || 0) / 2));
   return { color: '#8A3409', fillColor: '#DD6F2A', radius };
 }
 
-export default function MapView({ center, zoom = 14, reports = [], picked, onPick, user, small }) {
+export default function MapView({ center, zoom = 14, reports = [], picked, onPick, onSelect, user, small }) {
   return (
     <div className={small ? 'map small' : 'map'}>
       <MapContainer center={center} zoom={zoom} style={{ height: '100%', width: '100%' }} scrollWheelZoom={false}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <Recenter center={center} zoom={zoom} />
         {onPick ? <ClickToPick onPick={onPick} /> : null}
         {reports.map((r) => {
           const s = styleFor(r);
           return (
-            <CircleMarker key={r.id} center={[r.lat, r.lng]} radius={s.radius} pathOptions={{ color: s.color, fillColor: s.fillColor, fillOpacity: 0.55, weight: 2 }}>
+            <CircleMarker key={r.id} center={[r.lat, r.lng]} radius={s.radius} pathOptions={{ color: s.color, fillColor: s.fillColor, fillOpacity: 0.55, weight: 2 }} eventHandlers={onSelect ? { click: () => onSelect(r.id) } : undefined}>
               <Popup>
                 <strong>{categoryById(r.cat).label}</strong><br />
                 {r.street}{r.area ? `, ${r.area}` : ''}<br />
