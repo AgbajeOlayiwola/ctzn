@@ -24,7 +24,11 @@ export function ContributionGate({ children }) {
   return session ? children : <ContributorAccount />;
 }
 
-export default function ContributorAccount({ showSubmissions = false }) {
+export function useContributorSession() {
+  return useContext(AccountContext);
+}
+
+export default function ContributorAccount({ showSubmissions = false, description = 'Sign in or create an account to send contributions for manual review.' }) {
   const session = useContext(AccountContext);
   const [creating, setCreating] = useState(true);
   const [email, setEmail] = useState('');
@@ -77,7 +81,7 @@ export default function ContributorAccount({ showSubmissions = false }) {
   </div>;
 
   return <form className="stack-sm" onSubmit={authenticate}>
-    <p>Sign in or create an account to send contributions for manual review.</p>
+    <p>{description}</p>
     <label className="stack-xs">Email<input className="field" type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)} /></label>
     <label className="stack-xs">Password<input className="field" type="password" autoComplete={creating ? 'new-password' : 'current-password'} minLength={creating ? 8 : undefined} required value={password} onChange={(event) => setPassword(event.target.value)} /></label>
     <button className="btn" disabled={busy}>{busy ? 'Please wait…' : creating ? 'Create account' : 'Sign in'}</button>

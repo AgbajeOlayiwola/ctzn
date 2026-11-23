@@ -1,10 +1,12 @@
 {
-  "name": "ctzn",
+  "name": "ctzn — Civic action, made local",
   "short_name": "ctzn",
-  "description": "Know who is in charge of your area, report problems, and track fixes.",
+  "description": "Know who is in charge of your area, report problems, and track what changes.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F4F5F0",
   "theme_color": "#0B6B3A",
-  "icons": []
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
 }

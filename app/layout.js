@@ -1,9 +1,10 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'ctzn',
-  description: 'Know who is in charge of your area, report problems, and track fixes.',
+  title: 'ctzn — Civic action, made local',
+  description: 'Know who is in charge of your area, report problems, and track what changes.',
   manifest: '/manifest.json',
+  icons: { icon: '/favicon.svg', shortcut: '/favicon.svg' },
 };
 
 export const viewport = {

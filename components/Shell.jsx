@@ -11,6 +11,9 @@ import Play from './Play';
 import AreaPicker from './AreaPicker';
 import Learn from './Learn';
 import ContributorAccount, { ContributorProvider } from './ContributorAccount';
+import Brand from './Brand';
+import CandidatePulse from './CandidatePulse';
+import StartupReveal from './StartupReveal';
 
 const LEVEL_BANDS = [[0, 50], [50, 150], [150, 300], [300, 600]];
 
@@ -35,14 +38,15 @@ function AppShell() {
 
   const tabs = [
     { id: 'power', label: t.nav_power }, { id: 'report', label: t.nav_report }, { id: 'heat', label: t.nav_map },
-    { id: 'learn', label: 'Learn' }, { id: 'fact', label: t.nav_fact }, { id: 'play', label: t.nav_play },
+    { id: 'learn', label: 'Learn' }, { id: 'pulse', label: t.nav_pulse }, { id: 'fact', label: t.nav_fact }, { id: 'play', label: t.nav_play },
   ];
 
   return (
     <div className="app">
+      <StartupReveal />
       <header className="header">
         <div className="header-row">
-          <div className="wordmark">ctzn</div>
+          <Brand />
           <div className="row">
             <select aria-label="Language" className="lang-select" value={store.lang} onChange={(e) => store.patch({ lang: e.target.value })}>
               {LANGS.map((l) => <option key={l.id} value={l.id}>{l.label}</option>)}
@@ -70,6 +74,7 @@ function AppShell() {
         {tab === 'learn' && <Learn goReport={() => go('report')} />}
         {tab === 'fact' && <FactCheck t={t} />}
         {tab === 'play' && <Play t={t} />}
+        {tab === 'pulse' && <CandidatePulse />}
         {tab === 'account' && <section className="card stack-sm"><h1>Contributor account</h1><ContributorAccount showSubmissions /></section>}
       </main>
 

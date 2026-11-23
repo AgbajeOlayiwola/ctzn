@@ -78,7 +78,7 @@ export default function Leaders({ t, area, openPerson, setOpenPerson }) {
   return (
     <div className="stack leaders-layout">
       <h1>{t.t_power}</h1>
-      <div className="note-ok coverage-note">Showing: {area.lga}, {area.state}{area.ward ? ` · Ward ${area.ward}` : ''}. {coverage.somolu ? 'Open a representative to see their profile, contacts and recent coverage. Ward-specific representatives appear only for mapped wards.' : 'The local directory currently covers Shomolu, Lagos. National officials are shown below; other local representatives have not been mapped yet.'} {!coverage.ward && coverage.somolu ? 'Select your mapped electoral ward to see your assembly member and councillor.' : ''}</div>
+      <div className="note-ok coverage-note">Your selected area: {area.lga}, {area.state}{area.ward ? ` · Ward ${area.ward}` : ''}. {coverage.somolu ? 'Open a representative to see their profile, contacts and recent coverage. Ward-specific representatives appear only for mapped wards.' : `The local directory currently covers Shomolu LGA only. This view includes national officials${coverage.lagos ? ' and the Lagos governor' : ''}; local council and ward representatives for your selected area have not been mapped yet.`} {!coverage.ward && coverage.somolu ? 'Select your mapped electoral ward to see your assembly member and councillor.' : ''}</div>
 
       {coverage.somolu && <section className="card allocation-card">
         <div className="label">{ALLOCATION.label}</div>

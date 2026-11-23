@@ -20,7 +20,7 @@ Without any setup the app runs on sample data and saves your reports in the brow
 
 1. In Supabase, open your project, go to SQL Editor, paste the contents of `supabase/schema.sql`, and run it.
 2. Copy `.env.local.example` to `.env.local`.
-3. Fill in the two values from Supabase (Project Settings, then API): the Project URL and the anon public key.
+3. Fill in the two values from Supabase (Project Settings, then API): the Project URL and the publishable key (or the legacy anon public key).
 4. Stop and restart `npm run dev`.
 
 Reports and photos now save to Supabase and show up for everyone.
@@ -40,6 +40,7 @@ The Learn screen and relevant elected-official profiles also explain how policy 
 - **Learn:** short lessons and one-time quizzes about waste oversight, road contracts and evaluating evidence.
 - **Project evidence:** source intake for award references, alleged contractors, procuring authorities, dated progress claims, news/video/social links and timestamps. All contributor submissions are unreviewed. No contractor or abandonment is inferred from a report alone.
 - **Fact check:** news with verdicts and reasons, guessing game, claim submission.
+- **Election pulse:** voluntary, non-binding poll for candidates on INEC's published 2027 presidential list, with live aggregate totals and vote-share changes. One ballot per signed-in account; no money, prizes, or area-level results.
 - **Play:** quiz, mapping tasks, office scoreboard, badges, leaderboard.
 - **Languages:** English complete. Pidgin, Yoruba, Hausa and Igbo cover the main labels only (the last three are drafts awaiting native-speaker review).
 
@@ -48,6 +49,7 @@ The Learn screen and relevant elected-official profiles also explain how policy 
 - Officials, offices and allocation are real but cover **Shomolu, Lagos only**. Other areas need their own data.
 - Reports marked `sample: true` in `lib/data.js`, the office scoreboard and the area leaderboard are **sample numbers**.
 - Contributor accounts use email and password when Supabase is connected. Points live in the browser. The manual review queue covers claim tips, official-record suggestions and project evidence. Issue reports use the existing Map workflow.
+- The Election pulse is connected locally to the **minidraft** Supabase project, and `supabase/candidate-pulse.sql` has been applied. Email/password sign-in must be enabled for people to cast ballots. Add the same Supabase URL and publishable key to the production host before deploying. Candidate names were last checked against INEC's published presidential list on 23 November 2026; review that source before updating the list.
 - There is no automatic complaint email delivery service configured. The email action opens a real draft in the user's email client, and does not claim sending or delivery. Verified complaint inbox coverage currently includes LAWMA in Lagos; unknown recipients are never guessed.
 
 Automatic email delivery is intentionally deferred until a sender domain/account can be verified. The next implementation should provision a free-tier email service, use server-side credentials, accept only verified agency inboxes, validate report ownership, and record provider acceptance separately from delivery or agency acknowledgement. No automatic emails are sent by the current app.
@@ -68,9 +70,9 @@ With a key, reporters can click the Google map to place their report pin, switch
 
 The Map tab and the default reporting map use OpenStreetMap tiles through Leaflet, with visible OpenStreetMap attribution. Opening a location in Google Maps or Street View remains optional and does not require an API key. The Google map and Street View controls in the reporting flow remain available only when a Google Maps key is configured; the app falls back to OpenStreetMap if Google fails to load.
 
-ctzn currently runs locally with its database connection disabled in `.env.local`, at the user's request. Reports, existing drafts and learning progress are saved in this browser's storage. Contributor sign-up and submissions need a connected Supabase project. Map, news and optional location services still make external requests when used.
+The local app connects to the **minidraft** Supabase project through `.env.local`. Reports and evidence use the isolated ctzn tables; drafts and learning progress remain in this browser's storage. Contributor sign-up and submissions use Supabase Auth. Map, news and optional location services still make external requests when used.
 
-Isolated tables (`public.ctzn_reports`, `public.ctzn_report_evidence`) and the `ctzn-report-photos` bucket were previously prepared in the existing **minidraft** Supabase project. They are not connected to the local app, and existing minidraft tables were not changed. The definitions remain in `supabase/schema.sql` for optional future use; old unprefixed round-one tables are not used or migrated automatically.
+Isolated tables (`public.ctzn_reports`, `public.ctzn_report_evidence`) and the `ctzn-report-photos` bucket are in **minidraft**. The Election Pulse uses separate tables (`public.ctzn_pulse_votes`, `public.ctzn_pulse_totals`, `public.ctzn_pulse_daily`) and does not expose ballot identities. Old unprefixed round-one tables are not used or migrated automatically.
 
 The report photo bucket accepts JPEG, PNG and WebP images up to 10 MB. The app shows report publication failures as device-only and supports manually refreshing the shared report list.
 
@@ -81,6 +83,14 @@ The report photo bucket accepts JPEG, PNG and WebP images up to 10 MB. The app s
 3. Review submissions in the Supabase dashboard's Table Editor. Open `public.ctzn_contributions`, filter `review_status` to `pending`, and review each row's `kind`, `subject` and `details`. Set `review_status` to `approved` or `rejected`. Contributors can see the result in **Account**. To publish approved material, add the reviewed content to the relevant editorial record separately.
 
 New submissions start private and pending. Contributors can read their own submissions and only project editors can change the review status. Email confirmation checks access to the email address. Contributor verification is deferred.
+
+### Turn on the shared election pulse
+
+1. Choose the Supabase project the app should use and connect its URL and publishable/anon key through `.env.local` for local development and the host's environment settings for deployment.
+2. In that project's SQL Editor, run `supabase/candidate-pulse.sql`. This step is complete for **minidraft**. The script enables RLS, permits signed-in users to submit one ballot per account, keeps ballots private, and exposes aggregate counts and daily totals.
+3. Enable email/password sign-up and email confirmation in Supabase Auth. Set the app URL in Auth's redirect allowlist.
+
+The poll is an open, self-selected pulse, not a representative survey or INEC result. Accounts and voter eligibility are not independently verified. Ballots cannot be changed. The candidate list is maintained in `lib/candidate-pulse.js` from the linked INEC source.
 
 Recent street coverage is fetched on request through `/api/project-coverage`, from Google News RSS, filtered to the last 30 days and cached for one hour. Search results remain leads until the project location/contract is matched. GST and unindexed video/social links can be attached manually. The app does not scrape social accounts or treat popularity as verification.
 
